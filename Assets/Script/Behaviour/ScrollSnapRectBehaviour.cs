@@ -13,7 +13,7 @@ namespace Assets.Script.Behaviour {
         [Tooltip("Threshold time for fast swipe in seconds")] public float FastSwipeThresholdTime = 0.3f;
         [Tooltip("Threshold time for fast swipe in (unscaled) pixels")] public int FastSwipeThresholdDistance = 100;
         [Tooltip("How fast will page lerp to target position")] public float DecelerationRate = 10f;
-        [Tooltip("Sprite for unselected page (optional)")] public Color UnselectedPageColor; 
+        [Tooltip("Sprite for unselected page (optional)")] public Color UnselectedPageColor;
         [Tooltip("Sprite for selected page (optional)")] public Color SelectedPageColor;
         [Tooltip("Container with page images (optional)")] public Transform PageSelectionIcons;
 
@@ -41,7 +41,7 @@ namespace Assets.Script.Behaviour {
         private bool _dragging;
         private float _timeStamp;
         private Vector2 _startPosition;
-        
+
         private int _previousPageSelectionIndex;
         // container with Image components - one Image for each page
         private List<Image> _pageSelectionImages;
@@ -100,7 +100,7 @@ namespace Assets.Script.Behaviour {
             if (_horizontal) {
                 // screen width in pixels of scrollrect window
                 // width = (int)_scrollRectRect.rect.width/4;
-                width = (int)_scrollRectRect.rect.width / 2;    
+                width = (int) _scrollRectRect.rect.width / 2;
                 // center position of all pages
                 offsetX = width / 2;
                 // total width
@@ -120,12 +120,12 @@ namespace Assets.Script.Behaviour {
             _scrollContainer.sizeDelta = newSize;
             var newPosition = new Vector2(containerWidth / 2f, containerHeight / 2f);
             _scrollContainer.anchoredPosition = newPosition;
-         
+
             _pagePositions.Clear();
 
             for (var i = 0; i < _pageCount; i++) {
-               var child = _scrollContainer.GetChild(i).GetComponent<RectTransform>();
-               var childPosition = _horizontal
+                var child = _scrollContainer.GetChild(i).GetComponent<RectTransform>();
+                var childPosition = _horizontal
                     ? new Vector2(i * width - containerWidth / 2 + offsetX, 0f)
                     : new Vector2(0f, -(i * height - containerHeight / 2 + offsetY));
                 child.anchoredPosition = childPosition;
@@ -199,6 +199,7 @@ namespace Assets.Script.Behaviour {
         private void NextScreen() {
             LerpToPage(_currentPage + 1);
         }
+
         private void PreviousScreen() {
             LerpToPage(_currentPage - 1);
         }
@@ -263,7 +264,7 @@ namespace Assets.Script.Behaviour {
                 _startPosition = _scrollContainer.anchoredPosition;
             }
             else {
-               SetPageSelection(GetNearestPage());
+                SetPageSelection(GetNearestPage());
             }
         }
 
@@ -273,8 +274,7 @@ namespace Assets.Script.Behaviour {
 
         private int CurrentPage {
             get { return _currentPage; }
-            set
-            {
+            set {
                 if (value == _currentPage) return;
                 var index = Mathf.Clamp(value, 0, _pageCount - 1);
                 _treasurePanelBehaviour.PlayAnimation(index, "Selected");

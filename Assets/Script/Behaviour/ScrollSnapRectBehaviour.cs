@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -158,10 +159,10 @@ namespace Assets.Script.Behaviour {
         }
 
         private void LerpToPage(int aPageIndex) {
-            if (aPageIndex != CurrentPage) {
+            aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
+            if (aPageIndex != _currentPage) {
                 _treasurePanelBehaviour.PlayAnimation(_currentPage, "Unselected");
             }
-            aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
             _lerpTo = _pagePositions[aPageIndex];
             _lerp = true;
             CurrentPage = aPageIndex;
@@ -275,7 +276,9 @@ namespace Assets.Script.Behaviour {
         private int CurrentPage {
             get { return _currentPage; }
             set {
-                if (value == _currentPage) return;
+                if (value == _currentPage) {
+                    return;
+                }
                 var index = Mathf.Clamp(value, 0, _pageCount - 1);
                 _treasurePanelBehaviour.PlayAnimation(index, "Selected");
                 _currentPage = value;
@@ -288,7 +291,6 @@ namespace Assets.Script.Behaviour {
 
         public void OnNextButtonClick() {
             NextScreen();
-            _treasurePanelBehaviour.PlayAnimation(_currentPage, "Selected");
         }
 
         #endregion

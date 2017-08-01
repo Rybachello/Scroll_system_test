@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,7 @@ namespace Assets.Script.Behaviour {
             }
 
             _treasurePrefabList = CreateTreasurePrefabs(_scrollSnapRectBehaviour.ScrollContent);
+            PlayAnimation(0, "Selected"); //initial
             _pageIcons = CreatePageSelectionIcons();
         }
 
@@ -58,17 +60,34 @@ namespace Assets.Script.Behaviour {
             for (int i = 0; i < ListSize; i++) {
                 var treasurePrefabGameOb = Instantiate(_treasurePrefab, contentTransform);
                 treasurePrefabGameOb.name = "treasure_" + i;
-
+                treasurePrefabGameOb.gameObject.SetActive(false);
                 var treasurePrefabBehaviour = treasurePrefabGameOb.GetComponent<TreasurePrefabBehaviour>();
                 treasureList.Add(treasurePrefabBehaviour);
             }
-            treasureList[0].PlayAnim("Selected"); //initial
             return treasureList;
         }
 
         public void PlayAnimation(int index, string animationName) {
             var treasurePrefabBehaviour = _treasurePrefabList[index];
+            if (treasurePrefabBehaviour.gameObject.activeInHierarchy == false)
+                treasurePrefabBehaviour.gameObject.SetActive(true);
+            UpdateTreasureGameObjects(index);
             treasurePrefabBehaviour.PlayAnim(animationName);
+        }
+
+        private void UpdateTreasureGameObjects(int index) {
+            if (index != 0 && index != 1) {
+                _treasurePrefabList[index - 2].gameObject.SetActive(false);
+            }
+            if (index != 0) {
+                _treasurePrefabList[index - 1].gameObject.SetActive(true);
+            }
+            if (index != ListSize - 1) {
+                _treasurePrefabList[index + 1].gameObject.SetActive(true);
+            }
+            if (index != ListSize - 2 && index != ListSize - 1) {
+                _treasurePrefabList[index + 2].gameObject.SetActive(false);
+            }
         }
 
         public List<TreasurePrefabBehaviour> TreasurePrefabList {

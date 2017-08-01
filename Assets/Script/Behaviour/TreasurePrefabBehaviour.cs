@@ -3,12 +3,13 @@ using UnityEngine.UI;
 
 namespace Assets.Script.Behaviour {
     public class TreasurePrefabBehaviour : MonoBehaviour {
-
+        //todo: maybe add text and other staff later
         private Animator _animator;
+
         private void Awake() {
             Init();
         }
-        //private Image 
+
         private void Init() {
             _animator = gameObject.GetComponent<Animator>();
         }

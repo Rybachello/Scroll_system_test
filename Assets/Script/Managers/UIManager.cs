@@ -11,7 +11,7 @@ namespace Assets.Script.Managers {
         private Image _bgImage;
         private TreasurePanelBehaviour _treasurePanelBehaviour;
         //todo: for managin open/close treauser menu
-        
+
         private void Awake() {
             Init();
         }
@@ -26,8 +26,7 @@ namespace Assets.Script.Managers {
 
         private void InitBackground() {
             _bgImage = gameObject.GetComponentInChildren<Image>();
-            if (!_bgImage)
-            {
+            if (!_bgImage) {
                 Debug.LogWarning("BG image is not found");
                 return;
             }

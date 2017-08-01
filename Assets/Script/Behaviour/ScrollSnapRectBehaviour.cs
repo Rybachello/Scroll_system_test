@@ -13,8 +13,8 @@ namespace Assets.Script.Behaviour {
         [Tooltip("Threshold time for fast swipe in seconds")] public float FastSwipeThresholdTime = 0.3f;
         [Tooltip("Threshold time for fast swipe in (unscaled) pixels")] public int FastSwipeThresholdDistance = 100;
         [Tooltip("How fast will page lerp to target position")] public float DecelerationRate = 10f;
-        [Tooltip("Sprite for unselected page (optional)")] public Sprite UnselectedPage; //todo:change to color
-        [Tooltip("Sprite for selected page (optional)")] public Sprite SelectedPage;
+        [Tooltip("Sprite for unselected page (optional)")] public Color UnselectedPageColor; 
+        [Tooltip("Sprite for selected page (optional)")] public Color SelectedPageColor;
         [Tooltip("Container with page images (optional)")] public Transform PageSelectionIcons;
 
         private int _fastSwipeThresholdMaxLimit;
@@ -41,9 +41,7 @@ namespace Assets.Script.Behaviour {
         private bool _dragging;
         private float _timeStamp;
         private Vector2 _startPosition;
-
-        // for showing small page icons
-        private bool _showPageSelection;
+        
         private int _previousPageSelectionIndex;
         // container with Image components - one Image for each page
         private List<Image> _pageSelectionImages;
@@ -64,10 +62,9 @@ namespace Assets.Script.Behaviour {
             if (!_scrollRectRect) {
                 Debug.LogWarning("Cannot find ScrollRect Transform");
             }
-            
+
             _treasurePanelBehaviour = gameObject.GetComponentInParent<TreasurePanelBehaviour>();
-            if (!_treasurePanelBehaviour)
-            {
+            if (!_treasurePanelBehaviour) {
                 Debug.LogWarning("Cannot find TreasurePanelBehaviour");
             }
             _pageCount = _scrollContainer.childCount;
@@ -150,11 +147,7 @@ namespace Assets.Script.Behaviour {
                     // clear also any scrollrect move that may interfere with our lerping
                     _scrollRectComponent.velocity = Vector2.zero;
                 }
-
-                // switches selection icon exactly to correct page
-                if (_showPageSelection) {
-                    SetPageSelection(GetNearestPage());
-                }
+                SetPageSelection(GetNearestPage());
             }
         }
 
@@ -175,26 +168,16 @@ namespace Assets.Script.Behaviour {
         }
 
         private void InitPageSelection() {
-            // page selection - only if defined sprites for selection icons
-            _showPageSelection = UnselectedPage != null && SelectedPage != null;
-            if (!_showPageSelection) return;
-            // also container with selection images must be defined and must have exatly the same amount of items as pages container
-            if (PageSelectionIcons == null || PageSelectionIcons.childCount != _pageCount) {
-                Debug.LogWarning("Different count of pages and selection icons - will not show page selection");
-                _showPageSelection = false;
-            }
-            else {
-                _previousPageSelectionIndex = -1;
-                _pageSelectionImages = new List<Image>();
+            _previousPageSelectionIndex = -1;
+            _pageSelectionImages = new List<Image>();
 
-                // cache all Image components into list
-                for (int i = 0; i < PageSelectionIcons.childCount; i++) {
-                    Image image = PageSelectionIcons.GetChild(i).GetComponent<Image>();
-                    if (image == null) {
-                        Debug.LogWarning("Page selection icon at position " + i + " is missing Image component");
-                    }
-                    _pageSelectionImages.Add(image);
+            // cache all Image components into list
+            for (int i = 0; i < PageSelectionIcons.childCount; i++) {
+                Image image = PageSelectionIcons.GetChild(i).GetComponent<Image>();
+                if (image == null) {
+                    Debug.LogWarning("Page selection icon at position " + i + " is missing Image component");
                 }
+                _pageSelectionImages.Add(image);
             }
         }
 
@@ -203,16 +186,12 @@ namespace Assets.Script.Behaviour {
             if (_previousPageSelectionIndex == aPageIndex) {
                 return;
             }
-
             // unselect old
             if (_previousPageSelectionIndex >= 0) {
-                _pageSelectionImages[_previousPageSelectionIndex].sprite = UnselectedPage;
-                _pageSelectionImages[_previousPageSelectionIndex].SetNativeSize();
+                _pageSelectionImages[_previousPageSelectionIndex].color = UnselectedPageColor;
             }
-
             // select new
-            _pageSelectionImages[aPageIndex].sprite = SelectedPage;
-            _pageSelectionImages[aPageIndex].SetNativeSize();
+            _pageSelectionImages[aPageIndex].color = SelectedPageColor;
 
             _previousPageSelectionIndex = aPageIndex;
         }
@@ -238,7 +217,6 @@ namespace Assets.Script.Behaviour {
                     nearestPage = i;
                 }
             }
-
             return nearestPage;
         }
 
@@ -273,7 +251,6 @@ namespace Assets.Script.Behaviour {
                 // if not fast time, look to which page we got to
                 LerpToPage(GetNearestPage());
             }
-
             _dragging = false;
         }
 
@@ -286,9 +263,7 @@ namespace Assets.Script.Behaviour {
                 _startPosition = _scrollContainer.anchoredPosition;
             }
             else {
-                if (_showPageSelection) {
-                    SetPageSelection(GetNearestPage());
-                }
+               SetPageSelection(GetNearestPage());
             }
         }
 
